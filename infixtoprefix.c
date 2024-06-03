@@ -1,34 +1,31 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX 100
 
 char stack[MAX];
 int top = -1;
 
-void push(char item)
-{
-    stack[++top] = item;
-}
+void push(char item) { stack[++top] = item; }
+char pop() { return stack[top--]; }
+int precedence(char c) { return (c == '+' || c == '-') ? 1 : (c == '*' || c == '/') ? 2   : (c == '^')               ? 3                                                : 0; }
 
-char pop()
+void reverseString(char str[])
 {
-    return stack[top--];
-}
-
-int precedence(char symbol)
-{
-    return (symbol == '+' || symbol == '-') ? 1 : (symbol == '*' || symbol == '/') ? 2
-                                              : (symbol == '^')                    ? 3
-                                                                                   : 0;
+    int n = strlen(str);
+    for (int i = 0; i < n / 2; i++)
+    {
+        char temp = str[i];
+        str[i] = str[n - i - 1];
+        str[n - i - 1] = temp;
+    }
 }
 
 void infixToPrefix(char infix[], char prefix[])
 {
-    int i, j = 0;
-    strrev(infix);
-    for (i = 0; infix[i] != '\0'; i++)
+    reverseString(infix);
+    for (int i = 0; infix[i]; i++)
     {
         if (infix[i] == ')')
             infix[i] = '(';
@@ -36,9 +33,10 @@ void infixToPrefix(char infix[], char prefix[])
             infix[i] = ')';
     }
 
-    for (i = 0; infix[i] != '\0'; i++)
+    int j = 0;
+    for (int i = 0; infix[i]; i++)
     {
-        if (infix[i] >= 'a' && infix[i] <= 'z')
+        if (isalpha(infix[i]))
             prefix[j++] = infix[i];
         else if (infix[i] == '(')
             push(infix[i]);
@@ -50,7 +48,7 @@ void infixToPrefix(char infix[], char prefix[])
         }
         else
         {
-            while (precedence(stack[top]) >= precedence(infix[i]))
+            while (top != -1 && precedence(stack[top]) >= precedence(infix[i]))
                 prefix[j++] = pop();
             push(infix[i]);
         }
@@ -58,7 +56,7 @@ void infixToPrefix(char infix[], char prefix[])
     while (top != -1)
         prefix[j++] = pop();
     prefix[j] = '\0';
-    strrev(prefix);
+    reverseString(prefix);
 }
 
 int main()

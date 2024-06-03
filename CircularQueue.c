@@ -98,6 +98,7 @@ int main()
             {
                 while (getchar() != '\n')
                     ;
+
                 printf("Invalid input. Please enter a number.\n");
                 continue;
             }

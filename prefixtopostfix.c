@@ -9,43 +9,73 @@ int top = -1;
 
 void push(char item[])
 {
-    strcpy(stack[++top], item);
+    if (top < MAX - 1)
+    {
+        strcpy(stack[++top], item);
+    }
+    else
+    {
+        printf("Stack overflow\n");
+        exit(EXIT_FAILURE); // Terminate the program on stack overflow
+    }
 }
 
 char *pop()
 {
-    return stack[top--];
+    if (top >= 0)
+    {
+        return stack[top--];
+    }
+    else
+    {
+        printf("Stack underflow\n");
+        exit(EXIT_FAILURE); // Terminate the program on stack underflow
+    }
 }
 
-void postfixToPrefix(char postfix[], char prefix[])
+void reverseString(char str[])
 {
-    int i, len = strlen(postfix);
+    int n = strlen(str);
+    for (int i = 0; i < n / 2; i++)
+    {
+        char temp = str[i];
+        str[i] = str[n - i - 1];
+        str[n - i - 1] = temp;
+    }
+}
+
+void prefixToPostfix(char prefix[], char postfix[])
+{
+    int len = strlen(prefix);
     char operand1[MAX], operand2[MAX], temp[MAX];
 
-    for (i = 0; i < len; i++)
+    reverseString(prefix);
+
+    for (int i = 0; i < len; i++)
     {
-        if (postfix[i] >= 'a' && postfix[i] <= 'z')
+        if ((prefix[i] >= 'a' && prefix[i] <= 'z') || (prefix[i] >= 'A' && prefix[i] <= 'Z'))
+
         {
-            sprintf(temp, "%c", postfix[i]);
+            sprintf(temp, "%c", prefix[i]);
             push(temp);
         }
         else
         {
-            strcpy(operand2, pop());
             strcpy(operand1, pop());
-            sprintf(temp, "%c%s%s", postfix[i], operand1, operand2);
+            strcpy(operand2, pop());
+            sprintf(temp, "%s%s%c", operand1, operand2, prefix[i]);
             push(temp);
         }
     }
-    strcpy(prefix, pop());
+    strcpy(postfix, pop());
 }
 
 int main()
 {
-    char postfix[MAX], prefix[MAX];
-    printf("Enter postfix expression: ");
-    scanf("%s", postfix);
-    postfixToPrefix(postfix, prefix);
-    printf("Prefix expression: %s\n", prefix);
+    char prefix[MAX], postfix[MAX];
+    printf("Enter prefix expression: ");
+    scanf("%s", prefix);
+    prefixToPostfix(prefix, postfix);
+    printf("Postfix expression: %s\n", postfix);
     return 0;
 }

@@ -9,20 +9,36 @@ int top = -1;
 
 void push(char item[])
 {
-    strcpy(stack[++top], item);
+    if (top < MAX - 1)
+    {
+        strcpy(stack[++top], item);
+    }
+    else
+    {
+        printf("Stack overflow\n");
+        exit(EXIT_FAILURE); // Terminate the program on stack overflow
+    }
 }
 
 char *pop()
 {
-    return stack[top--];
+    if (top >= 0)
+    {
+        return stack[top--];
+    }
+    else
+    {
+        printf("Stack underflow\n");
+        exit(EXIT_FAILURE); // Terminate the program on stack underflow
+    }
 }
 
 void postfixToPrefix(char postfix[], char prefix[])
 {
-    int i, len = strlen(postfix);
+    int len = strlen(postfix);
     char operand1[MAX], operand2[MAX], temp[MAX];
 
-    for (i = 0; i < len; i++)
+    for (int i = 0; i < len; i++)
     {
         if (postfix[i] >= 'a' && postfix[i] <= 'z')
         {
